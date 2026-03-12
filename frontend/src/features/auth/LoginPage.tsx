@@ -23,6 +23,7 @@ import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { useLoginMutation } from "../../shared/api/authApi";
+import iconSrc from "../../assets/login-icon.svg";
 
 interface LoginFormValues {
   username: string;
@@ -112,27 +113,19 @@ export const LoginPage: React.FC = () => {
         }}
       >
         <Box
+          component="img"
+          src={iconSrc}
           sx={{
             width: 56,
             height: 56,
             borderRadius: "50%",
-            bgcolor: "#111827",
             mx: "auto",
             mb: 3,
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
           }}
-        >
-          <Box
-            sx={{
-              width: 18,
-              height: 18,
-              borderRadius: "50%",
-              bgcolor: "#F9FAFB",
-            }}
-          />
-        </Box>
+        />
         <Typography variant="h4" component="h1" align="center" gutterBottom>
           Добро пожаловать!
         </Typography>
