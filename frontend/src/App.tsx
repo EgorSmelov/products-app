@@ -1,4 +1,4 @@
-import { Container, Typography } from '@mui/material'
+import { Container } from '@mui/material'
 import { ToastContainer } from 'react-toastify'
 import { Route, Routes } from 'react-router-dom'
 import 'react-toastify/dist/ReactToastify.css'
@@ -9,9 +9,6 @@ import { PrivateRoute } from './shared/ui'
 const App: React.FC = () => {
   return (
     <Container maxWidth="lg">
-      <Typography variant="h4" component="h1" sx={{ my: 4 }}>
-        Products App
-      </Typography>
       <Routes>
         <Route path="/" element={<LoginPage />} />
         <Route path="/login" element={<LoginPage />} />

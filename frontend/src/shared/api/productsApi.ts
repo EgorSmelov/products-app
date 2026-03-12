@@ -39,7 +39,8 @@ export const productsApi = createApi({
   endpoints: (builder) => ({
     getProducts: builder.query<ProductsResponse, GetProductsParams | void>({
       query: (params) => {
-        const url = new URL('/products', 'https://dummyjson.com')
+        const basePath = params?.search ? '/products/search' : '/products'
+        const url = new URL(basePath, 'https://dummyjson.com')
 
         if (params) {
           const { limit, skip, search, sortBy, order } = params

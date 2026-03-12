@@ -1,14 +1,24 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import {
   Alert,
   Box,
   Button,
   Checkbox,
   FormControlLabel,
+  Link,
+  Paper,
+  Divider,
   Stack,
   TextField,
   Typography,
 } from '@mui/material'
+import InputAdornment from '@mui/material/InputAdornment'
+import IconButton from '@mui/material/IconButton'
+import PersonOutlineOutlinedIcon from '@mui/icons-material/PersonOutlineOutlined'
+import LockOutlinedIcon from '@mui/icons-material/LockOutlined'
+import VisibilityOffOutlinedIcon from '@mui/icons-material/VisibilityOffOutlined'
+import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined'
+import CloseRoundedIcon from '@mui/icons-material/CloseRounded'
 import { useForm } from 'react-hook-form'
 import { useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
@@ -24,6 +34,8 @@ export const LoginPage: React.FC = () => {
   const {
     register,
     handleSubmit,
+    setValue,
+    watch,
     formState: { errors },
   } = useForm<LoginFormValues>({
     defaultValues: {
@@ -32,6 +44,9 @@ export const LoginPage: React.FC = () => {
       rememberMe: false,
     },
   })
+
+  const usernameValue = watch('username')
+  const [showPassword, setShowPassword] = useState<boolean>(false)
 
   const navigate = useNavigate()
   const [login, { isLoading, error }] = useLoginMutation()
@@ -73,53 +88,192 @@ export const LoginPage: React.FC = () => {
   }, [apiErrorMessage, error])
 
   return (
-    <Box maxWidth={400} mx="auto">
-      <Typography variant="h5" component="h2" mb={3}>
-        Вход в аккаунт
-      </Typography>
-      <Box component="form" noValidate onSubmit={handleSubmit(onSubmit)}>
-        <Stack spacing={2}>
-          <TextField
-            label="Имя пользователя"
-            fullWidth
-            autoComplete="username"
-            {...register('username', {
-              required: 'Имя пользователя обязательно',
-            })}
-            error={Boolean(errors.username)}
-            helperText={errors.username?.message}
+    <Box
+      sx={{
+        minHeight: '100vh',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+      }}
+    >
+      <Paper
+        elevation={0}
+        sx={{
+          maxWidth: 420,
+          width: '100%',
+          p: 4,
+          borderRadius: 5,
+          boxShadow: '0 30px 80px rgba(15, 23, 42, 0.35)',
+          bgcolor: '#F5F5F7',
+        }}
+      >
+        <Box
+          sx={{
+            width: 56,
+            height: 56,
+            borderRadius: '50%',
+            bgcolor: '#111827',
+            mx: 'auto',
+            mb: 3,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+        >
+          <Box
+            sx={{
+              width: 18,
+              height: 18,
+              borderRadius: '50%',
+              bgcolor: '#F9FAFB',
+            }}
           />
-          <TextField
-            label="Пароль"
-            type="password"
-            fullWidth
-            autoComplete="current-password"
-            {...register('password', {
-              required: 'Пароль обязателен',
-              minLength: {
-                value: 4,
-                message: 'Пароль должен содержать минимум 4 символа',
-              },
-            })}
-            error={Boolean(errors.password)}
-            helperText={errors.password?.message}
-          />
-          <FormControlLabel
-            control={<Checkbox {...register('rememberMe')} color="primary" />}
-            label="Запомнить меня"
-          />
-          {error && <Alert severity="error">{apiErrorMessage}</Alert>}
-          <Button
-            type="submit"
-            variant="contained"
-            color="primary"
-            fullWidth
-            disabled={isLoading}
-          >
-            {isLoading ? 'Входим...' : 'Войти'}
-          </Button>
-        </Stack>
-      </Box>
+        </Box>
+        <Typography variant="h4" component="h1" align="center" gutterBottom>
+          Добро пожаловать!
+        </Typography>
+        <Typography
+          variant="body2"
+          align="center"
+          sx={{ color: 'text.secondary', mb: 4 }}
+        >
+          Пожалуйста, авторизируйтесь
+        </Typography>
+
+        <Box component="form" noValidate onSubmit={handleSubmit(onSubmit)}>
+          <Stack spacing={2.5}>
+            <Box>
+              <Typography
+                variant="caption"
+                sx={{ display: 'block', mb: 0.5, color: 'text.secondary' }}
+              >
+                Логин
+              </Typography>
+              <TextField
+                fullWidth
+                autoComplete="username"
+                placeholder="test"
+                {...register('username', {
+                  required: 'Имя пользователя обязательно',
+                })}
+                error={Boolean(errors.username)}
+                helperText={errors.username?.message}
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <PersonOutlineOutlinedIcon fontSize="small" />
+                    </InputAdornment>
+                  ),
+                  endAdornment: usernameValue ? (
+                    <InputAdornment position="end">
+                      <IconButton
+                        size="small"
+                        edge="end"
+                        onClick={() => setValue('username', '')}
+                      >
+                        <CloseRoundedIcon fontSize="small" />
+                      </IconButton>
+                    </InputAdornment>
+                  ) : undefined,
+                }}
+              />
+            </Box>
+
+            <Box>
+              <Typography
+                variant="caption"
+                sx={{ display: 'block', mb: 0.5, color: 'text.secondary' }}
+              >
+                Пароль
+              </Typography>
+              <TextField
+                fullWidth
+                type={showPassword ? 'text' : 'password'}
+                autoComplete="current-password"
+                {...register('password', {
+                  required: 'Пароль обязателен',
+                  minLength: {
+                    value: 4,
+                    message: 'Пароль должен содержать минимум 4 символа',
+                  },
+                })}
+                error={Boolean(errors.password)}
+                helperText={errors.password?.message}
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <LockOutlinedIcon fontSize="small" />
+                    </InputAdornment>
+                  ),
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton
+                        size="small"
+                        edge="end"
+                        onClick={() => setShowPassword((prev) => !prev)}
+                      >
+                        {showPassword ? (
+                          <VisibilityOffOutlinedIcon fontSize="small" />
+                        ) : (
+                          <VisibilityOutlinedIcon fontSize="small" />
+                        )}
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                }}
+              />
+            </Box>
+
+            <FormControlLabel
+              control={<Checkbox {...register('rememberMe')} color="primary" />}
+              label="Запомнить данные"
+              sx={{ ml: 0, color: 'text.secondary' }}
+            />
+
+            {error && <Alert severity="error">{apiErrorMessage}</Alert>}
+
+            <Button
+              type="submit"
+              variant="contained"
+              color="primary"
+              fullWidth
+              disabled={isLoading}
+              sx={{ py: 1.2, borderRadius: 999 }}
+            >
+              {isLoading ? 'Входим...' : 'Войти'}
+            </Button>
+
+            <Box
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: 1.5,
+                mt: 1,
+              }}
+            >
+              <Divider sx={{ flex: 1 }} />
+              <Typography
+                variant="caption"
+                sx={{ color: 'text.disabled' }}
+              >
+                или
+              </Typography>
+              <Divider sx={{ flex: 1 }} />
+            </Box>
+
+            <Typography
+              variant="body2"
+              align="center"
+              sx={{ color: 'text.secondary', mt: 0.5 }}
+            >
+              Нет аккаунта?{' '}
+              <Link href="#" underline="hover">
+                Создать
+              </Link>
+            </Typography>
+          </Stack>
+        </Box>
+      </Paper>
     </Box>
   )
 }
