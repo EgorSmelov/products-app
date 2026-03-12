@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState } from "react";
 import {
   Alert,
   Box,
@@ -11,23 +11,23 @@ import {
   Stack,
   TextField,
   Typography,
-} from '@mui/material'
-import InputAdornment from '@mui/material/InputAdornment'
-import IconButton from '@mui/material/IconButton'
-import PersonOutlineOutlinedIcon from '@mui/icons-material/PersonOutlineOutlined'
-import LockOutlinedIcon from '@mui/icons-material/LockOutlined'
-import VisibilityOffOutlinedIcon from '@mui/icons-material/VisibilityOffOutlined'
-import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined'
-import CloseRoundedIcon from '@mui/icons-material/CloseRounded'
-import { useForm } from 'react-hook-form'
-import { useNavigate } from 'react-router-dom'
-import { toast } from 'react-toastify'
-import { useLoginMutation } from '../../shared/api/authApi'
+} from "@mui/material";
+import InputAdornment from "@mui/material/InputAdornment";
+import IconButton from "@mui/material/IconButton";
+import PersonOutlineOutlinedIcon from "@mui/icons-material/PersonOutlineOutlined";
+import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
+import VisibilityOffOutlinedIcon from "@mui/icons-material/VisibilityOffOutlined";
+import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
+import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
+import { useForm } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import { useLoginMutation } from "../../shared/api/authApi";
 
 interface LoginFormValues {
-  username: string
-  password: string
-  rememberMe: boolean
+  username: string;
+  password: string;
+  rememberMe: boolean;
 }
 
 export const LoginPage: React.FC = () => {
@@ -39,93 +39,97 @@ export const LoginPage: React.FC = () => {
     formState: { errors },
   } = useForm<LoginFormValues>({
     defaultValues: {
-      username: 'emilys',
-      password: 'emilyspass',
+      username: "",
+      password: "",
       rememberMe: false,
     },
-  })
+  });
 
-  const usernameValue = watch('username')
-  const [showPassword, setShowPassword] = useState<boolean>(false)
+  const usernameValue = watch("username");
+  const [showPassword, setShowPassword] = useState<boolean>(false);
 
-  const navigate = useNavigate()
-  const [login, { isLoading, error }] = useLoginMutation()
+  const navigate = useNavigate();
+  const [login, { isLoading, error }] = useLoginMutation();
 
   const onSubmit = async (values: LoginFormValues): Promise<void> => {
     try {
       const response = await login({
         username: values.username,
         password: values.password,
-      }).unwrap()
+      }).unwrap();
+
+      const tokenKey = "token";
+
+      window.localStorage.removeItem(tokenKey);
+      window.sessionStorage.removeItem(tokenKey);
 
       const storage: Storage = values.rememberMe
         ? window.localStorage
-        : window.sessionStorage
+        : window.sessionStorage;
 
-      storage.setItem('token', response.token)
+      storage.setItem(tokenKey, response.token);
 
-      toast.success('Вы успешно вошли в систему')
-      navigate('/products', { replace: true })
+      toast.success("Вы успешно вошли в систему");
+      navigate("/products", { replace: true });
     } catch {
       // error handled via mutation error state
     }
-  }
+  };
 
   const apiErrorMessage =
     (error &&
-      'data' in error &&
-      typeof error.data === 'object' &&
+      "data" in error &&
+      typeof error.data === "object" &&
       error.data !== null &&
-      'message' in error.data &&
-      typeof (error.data as { message?: string }).message === 'string' &&
+      "message" in error.data &&
+      typeof (error.data as { message?: string }).message === "string" &&
       (error.data as { message?: string }).message) ||
-    'Не удалось выполнить вход. Попробуйте ещё раз.'
+    "Не удалось выполнить вход. Попробуйте ещё раз.";
 
   useEffect(() => {
     if (error) {
-      toast.error(apiErrorMessage)
+      toast.error(apiErrorMessage);
     }
-  }, [apiErrorMessage, error])
+  }, [apiErrorMessage, error]);
 
   return (
     <Box
       sx={{
-        minHeight: '100vh',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
+        minHeight: "100vh",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
       }}
     >
       <Paper
         elevation={0}
         sx={{
           maxWidth: 420,
-          width: '100%',
+          width: "100%",
           p: 4,
           borderRadius: 5,
-          boxShadow: '0 30px 80px rgba(15, 23, 42, 0.35)',
-          bgcolor: '#F5F5F7',
+          bgcolor: "#F5F5F7",
         }}
       >
         <Box
           sx={{
             width: 56,
             height: 56,
-            borderRadius: '50%',
-            bgcolor: '#111827',
-            mx: 'auto',
+            borderRadius: "50%",
+            bgcolor: "#111827",
+            mx: "auto",
             mb: 3,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
           }}
         >
           <Box
             sx={{
               width: 18,
               height: 18,
-              borderRadius: '50%',
-              bgcolor: '#F9FAFB',
+              borderRadius: "50%",
+              bgcolor: "#F9FAFB",
             }}
           />
         </Box>
@@ -135,7 +139,7 @@ export const LoginPage: React.FC = () => {
         <Typography
           variant="body2"
           align="center"
-          sx={{ color: 'text.secondary', mb: 4 }}
+          sx={{ color: "text.secondary", mb: 4 }}
         >
           Пожалуйста, авторизируйтесь
         </Typography>
@@ -145,7 +149,7 @@ export const LoginPage: React.FC = () => {
             <Box>
               <Typography
                 variant="caption"
-                sx={{ display: 'block', mb: 0.5, color: 'text.secondary' }}
+                sx={{ display: "block", mb: 0.5, color: "text.secondary" }}
               >
                 Логин
               </Typography>
@@ -153,8 +157,8 @@ export const LoginPage: React.FC = () => {
                 fullWidth
                 autoComplete="username"
                 placeholder="test"
-                {...register('username', {
-                  required: 'Имя пользователя обязательно',
+                {...register("username", {
+                  required: "Имя пользователя обязательно",
                 })}
                 error={Boolean(errors.username)}
                 helperText={errors.username?.message}
@@ -169,7 +173,7 @@ export const LoginPage: React.FC = () => {
                       <IconButton
                         size="small"
                         edge="end"
-                        onClick={() => setValue('username', '')}
+                        onClick={() => setValue("username", "")}
                       >
                         <CloseRoundedIcon fontSize="small" />
                       </IconButton>
@@ -182,19 +186,19 @@ export const LoginPage: React.FC = () => {
             <Box>
               <Typography
                 variant="caption"
-                sx={{ display: 'block', mb: 0.5, color: 'text.secondary' }}
+                sx={{ display: "block", mb: 0.5, color: "text.secondary" }}
               >
                 Пароль
               </Typography>
               <TextField
                 fullWidth
-                type={showPassword ? 'text' : 'password'}
+                type={showPassword ? "text" : "password"}
                 autoComplete="current-password"
-                {...register('password', {
-                  required: 'Пароль обязателен',
+                {...register("password", {
+                  required: "Пароль обязателен",
                   minLength: {
                     value: 4,
-                    message: 'Пароль должен содержать минимум 4 символа',
+                    message: "Пароль должен содержать минимум 4 символа",
                   },
                 })}
                 error={Boolean(errors.password)}
@@ -225,9 +229,9 @@ export const LoginPage: React.FC = () => {
             </Box>
 
             <FormControlLabel
-              control={<Checkbox {...register('rememberMe')} color="primary" />}
+              control={<Checkbox {...register("rememberMe")} color="primary" />}
               label="Запомнить данные"
-              sx={{ ml: 0, color: 'text.secondary' }}
+              sx={{ ml: 0, color: "text.secondary" }}
             />
 
             {error && <Alert severity="error">{apiErrorMessage}</Alert>}
@@ -240,22 +244,19 @@ export const LoginPage: React.FC = () => {
               disabled={isLoading}
               sx={{ py: 1.2, borderRadius: 999 }}
             >
-              {isLoading ? 'Входим...' : 'Войти'}
+              {isLoading ? "Входим..." : "Войти"}
             </Button>
 
             <Box
               sx={{
-                display: 'flex',
-                alignItems: 'center',
+                display: "flex",
+                alignItems: "center",
                 gap: 1.5,
                 mt: 1,
               }}
             >
               <Divider sx={{ flex: 1 }} />
-              <Typography
-                variant="caption"
-                sx={{ color: 'text.disabled' }}
-              >
+              <Typography variant="caption" sx={{ color: "text.disabled" }}>
                 или
               </Typography>
               <Divider sx={{ flex: 1 }} />
@@ -264,9 +265,9 @@ export const LoginPage: React.FC = () => {
             <Typography
               variant="body2"
               align="center"
-              sx={{ color: 'text.secondary', mt: 0.5 }}
+              sx={{ color: "text.secondary", mt: 0.5 }}
             >
-              Нет аккаунта?{' '}
+              Нет аккаунта?{" "}
               <Link href="#" underline="hover">
                 Создать
               </Link>
@@ -275,6 +276,5 @@ export const LoginPage: React.FC = () => {
         </Box>
       </Paper>
     </Box>
-  )
-}
-
+  );
+};

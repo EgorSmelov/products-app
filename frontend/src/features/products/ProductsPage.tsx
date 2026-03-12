@@ -111,22 +111,19 @@ export const ProductsPage: React.FC = () => {
   return (
     <Box sx={{ pt: 4, pb: 4 }}>
       {isFetching && <LinearProgress sx={{ mb: 2 }} />}
-      <Box>
-        <Typography variant="h4" sx={{ mb: 3, fontWeight: 600 }}>
-          Товары
-        </Typography>
+      <Paper
+        sx={{
+          mb: 3,
+          px: 3,
+          py: 2.5,
+          borderRadius: 3,
+        }}
+      >
+        <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
+          <Typography variant="h4" sx={{ fontWeight: 600 }}>
+            Товары
+          </Typography>
 
-        <Paper
-          sx={{
-            mb: 3,
-            px: 3,
-            py: 2,
-            borderRadius: 3,
-            display: "flex",
-            alignItems: "center",
-            gap: 2,
-          }}
-        >
           <TextField
             placeholder="Найти"
             variant="outlined"
@@ -141,8 +138,8 @@ export const ProductsPage: React.FC = () => {
               ),
             }}
           />
-        </Paper>
-      </Box>
+        </Box>
+      </Paper>
 
       <TableContainer component={Paper} sx={{ borderRadius: 3 }}>
         <Box
