@@ -20,6 +20,7 @@ export interface Product {
   rating: number
   stock: number
   brand: string
+  sku: string
   category: string
   thumbnail: string
   images: string[]

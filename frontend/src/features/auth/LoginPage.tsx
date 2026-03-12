@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import {
   Alert,
   Box,
@@ -11,6 +11,7 @@ import {
 } from '@mui/material'
 import { useForm } from 'react-hook-form'
 import { useNavigate } from 'react-router-dom'
+import { toast } from 'react-toastify'
 import { useLoginMutation } from '../../shared/api/authApi'
 
 interface LoginFormValues {
@@ -26,8 +27,8 @@ export const LoginPage: React.FC = () => {
     formState: { errors },
   } = useForm<LoginFormValues>({
     defaultValues: {
-      username: '',
-      password: '',
+      username: 'emilys',
+      password: 'emilyspass',
       rememberMe: false,
     },
   })
@@ -42,10 +43,13 @@ export const LoginPage: React.FC = () => {
         password: values.password,
       }).unwrap()
 
-      const storage: Storage = values.rememberMe ? window.localStorage : window.sessionStorage
+      const storage: Storage = values.rememberMe
+        ? window.localStorage
+        : window.sessionStorage
 
       storage.setItem('token', response.token)
 
+      toast.success('Вы успешно вошли в систему')
       navigate('/products', { replace: true })
     } catch {
       // error handled via mutation error state
@@ -62,22 +66,26 @@ export const LoginPage: React.FC = () => {
       (error.data as { message?: string }).message) ||
     'Не удалось выполнить вход. Попробуйте ещё раз.'
 
+  useEffect(() => {
+    if (error) {
+      toast.error(apiErrorMessage)
+    }
+  }, [apiErrorMessage, error])
+
   return (
     <Box maxWidth={400} mx="auto">
       <Typography variant="h5" component="h2" mb={3}>
         Вход в аккаунт
       </Typography>
-      <Box
-        component="form"
-        noValidate
-        onSubmit={handleSubmit(onSubmit)}
-      >
+      <Box component="form" noValidate onSubmit={handleSubmit(onSubmit)}>
         <Stack spacing={2}>
           <TextField
             label="Имя пользователя"
             fullWidth
             autoComplete="username"
-            {...register('username', { required: 'Имя пользователя обязательно' })}
+            {...register('username', {
+              required: 'Имя пользователя обязательно',
+            })}
             error={Boolean(errors.username)}
             helperText={errors.username?.message}
           />
@@ -97,19 +105,10 @@ export const LoginPage: React.FC = () => {
             helperText={errors.password?.message}
           />
           <FormControlLabel
-            control={
-              <Checkbox
-                {...register('rememberMe')}
-                color="primary"
-              />
-            }
+            control={<Checkbox {...register('rememberMe')} color="primary" />}
             label="Запомнить меня"
           />
-          {error && (
-            <Alert severity="error">
-              {apiErrorMessage}
-            </Alert>
-          )}
+          {error && <Alert severity="error">{apiErrorMessage}</Alert>}
           <Button
             type="submit"
             variant="contained"
